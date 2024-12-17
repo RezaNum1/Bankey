@@ -1,0 +1,62 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode files
+# User-specific Xcode settings
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/project.xcworkspace
+xcuserdata/
+
+# Build data
+build/
+DerivedData/
+
+# Swift package manager
+/.build/
+
+# Pods (if you're using CocoaPods)
+Pods/
+
+# Carthage (if you're using Carthage)
+Carthage/
+
+# SwiftPM (if you're using Swift Package Manager)
+Package.pins
+Package.resolved
+
+# Xcode-related temporary files
+*.hmap
+*.ipa
+*.dSYM/
+
+# Logs
+*.log
+
+# User-specific configuration files
+*.swp
+*.swo
+
+# Ignore all the Xcode-generated files related to assets
+*.assets
+*.xcassets/
+
+# Ignore playgrounds
+timeline.xctimeline
+playground.xcworkspace/
+
+# Ignore app-specific caches or data that shouldn't be versioned
+# (e.g., CoreData files, SQLite files)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Ignore test coverage files
+*.gcda
+*.gcno
+*.gch
+
+# Ignore third-party dependency managers' files (e.g., Pods, Carthage, etc.)
+
