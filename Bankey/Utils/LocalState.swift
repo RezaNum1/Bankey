@@ -18,7 +18,6 @@ public class LocalState {
         }
         set(newValue) {
             UserDefaults.standard.set(newValue, forKey: Keys.hasOnBoarded.rawValue)
-            UserDefaults.standard.synchronize()
         }
     }
 }

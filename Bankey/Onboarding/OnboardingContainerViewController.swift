@@ -14,11 +14,18 @@ protocol OnboardingViewControllerDelegate: AnyObject {
 class OnboardingContainerViewController: UIViewController {
     let pageViewController: UIPageViewController
     var pages = [UIViewController]()
-    var currentVC: UIViewController
     let closeButton = UIButton(type: .system)
     let nextButton = UIButton(type: .system)
     let backButton = UIButton(type: .system)
     let doneButton = UIButton(type: .system)
+    var currentVC: UIViewController {
+        didSet {
+            let currentIndex = pages.firstIndex(of: currentVC) ?? 0
+            backButton.isHidden = (currentIndex == 0)
+            doneButton.isHidden = (currentIndex != 2)
+            nextButton.isHidden = (currentIndex == 2)
+        }
+    }
 
     weak var delegate: OnboardingViewControllerDelegate?
 
@@ -120,14 +127,6 @@ class OnboardingContainerViewController: UIViewController {
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
         ])
     }
-    
-    // Method to update the visibility of the back button
-    private func updateBackButtonVisibility() {
-        let currentIndex = pages.firstIndex(of: currentVC) ?? 0
-        backButton.isHidden = (currentIndex == 0)
-        doneButton.isHidden = (currentIndex != 2)
-        nextButton.isHidden = (currentIndex == 2)
-    }
 }
 
 // MARK: UIPageViewControllerDataSource
@@ -143,14 +142,12 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
     private func getPreviousViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index - 1 >= 0 else { return nil }
         currentVC = pages[index - 1]
-        updateBackButtonVisibility()
         return pages[index - 1]
     }
 
     private func getNextViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index + 1 < pages.count else { return nil }
         currentVC = pages[index + 1]
-        updateBackButtonVisibility()
         return pages[index + 1]
     }
 
