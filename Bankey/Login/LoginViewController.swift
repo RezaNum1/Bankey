@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol LogoutDelegate: AnyObject {
+    func didLogout()
+}
+
 protocol LoginViewControllerDelegate: AnyObject {
     func didLogin()
 }
@@ -33,6 +37,11 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         style()
         layout()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.signInButton.configuration?.showsActivityIndicator = false
     }
 }
 
@@ -119,22 +128,24 @@ extension LoginViewController {
     }
 
     private func login() {
-        guard let username = username, let password = password else {
-            assertionFailure("Username / Password should never be nil")
-            return
-        }
+//        guard let username = username, let password = password else {
+//            assertionFailure("Username / Password should never be nil")
+//            return
+//        }
 
-        if username.isEmpty || password.isEmpty {
-            configureView(withMessage: "Username / Password should cannot be blank")
-            return
-        }
-
-        if username == "Reza" && password == "Welcome" {
-            signInButton.configuration?.showsActivityIndicator = true
-            delegate?.didLogin()
-        } else {
-            configureView(withMessage: "Incorrect username / password")
-        }
+        signInButton.configuration?.showsActivityIndicator = true
+        delegate?.didLogin()
+//        if username.isEmpty || password.isEmpty {
+//            configureView(withMessage: "Username / Password should cannot be blank")
+//            return
+//        }
+//
+//        if username == "Reza" && password == "Welcome" {
+//            signInButton.configuration?.showsActivityIndicator = true
+//            delegate?.didLogin()
+//        } else {
+//            configureView(withMessage: "Incorrect username / password")
+//        }
     }
 
     private func configureView(withMessage message: String) {

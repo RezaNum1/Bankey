@@ -16,6 +16,9 @@ class OnboardingContainerViewController: UIViewController {
     var pages = [UIViewController]()
     var currentVC: UIViewController
     let closeButton = UIButton(type: .system)
+    let nextButton = UIButton(type: .system)
+    let backButton = UIButton(type: .system)
+    let doneButton = UIButton(type: .system)
 
     weak var delegate: OnboardingViewControllerDelegate?
 
@@ -41,12 +44,9 @@ class OnboardingContainerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setup()
         style()
         layout()
-
-
     }
 
     private func setup() {
@@ -74,15 +74,59 @@ class OnboardingContainerViewController: UIViewController {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle("Close", for: [])
         closeButton.addTarget(self, action: #selector(closeTapped), for: .primaryActionTriggered)
+        
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.setTitle("Next", for: [])
+        nextButton.addTarget(self, action: #selector(nextTapped), for: .primaryActionTriggered)
+        
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.setTitle("Back", for: [])
+        backButton.addTarget(self, action: #selector(backTapped), for: .primaryActionTriggered)
+        backButton.isHidden = true
+        
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        doneButton.setTitle("Done", for: [])
+        doneButton.addTarget(self, action: #selector(doneTapped), for: .primaryActionTriggered)
+        doneButton.isHidden = true
 
         view.addSubview(closeButton)
+        view.addSubview(nextButton)
+        view.addSubview(backButton)
+        view.addSubview(doneButton)
     }
 
     private func layout() {
+        // Close Button
         NSLayoutConstraint.activate([
             closeButton.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
             closeButton.topAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor, multiplier: 2)
         ])
+        
+        // Next Button
+        NSLayoutConstraint.activate([
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
+        ])
+        
+        // Back Button
+        NSLayoutConstraint.activate([
+            backButton.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
+            backButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
+        ])
+        
+        // Done Button
+        NSLayoutConstraint.activate([
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32)
+        ])
+    }
+    
+    // Method to update the visibility of the back button
+    private func updateBackButtonVisibility() {
+        let currentIndex = pages.firstIndex(of: currentVC) ?? 0
+        backButton.isHidden = (currentIndex == 0)
+        doneButton.isHidden = (currentIndex != 2)
+        nextButton.isHidden = (currentIndex == 2)
     }
 }
 
@@ -99,12 +143,14 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
     private func getPreviousViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index - 1 >= 0 else { return nil }
         currentVC = pages[index - 1]
+        updateBackButtonVisibility()
         return pages[index - 1]
     }
 
     private func getNextViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index + 1 < pages.count else { return nil }
         currentVC = pages[index + 1]
+        updateBackButtonVisibility()
         return pages[index + 1]
     }
 
@@ -120,6 +166,20 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
 // MARK: Actions
 extension OnboardingContainerViewController {
     @objc func closeTapped(_ sender: UIButton) {
+        delegate?.didFinishOnboarding()
+    }
+    
+    @objc func nextTapped(_ sender: UIButton) {
+        guard let nextVC = self.getNextViewController(from: currentVC) else { return }
+        pageViewController.setViewControllers([nextVC], direction: .forward, animated: true, completion: nil)
+    }
+    
+    @objc func backTapped(_ sender: UIButton) {
+        guard let previousVC = self.getPreviousViewController(from: currentVC) else { return }
+        pageViewController.setViewControllers([previousVC], direction: .reverse, animated: true, completion: nil)
+    }
+    
+    @objc func doneTapped(_ sender: UIButton) {
         delegate?.didFinishOnboarding()
     }
 }
