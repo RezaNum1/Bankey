@@ -48,17 +48,6 @@ class MainViewController: UITabBarController {
     }
 }
 
-class AccountSummaryViewController: UIViewController {
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = .green
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 class MoveMoneyViewController: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
